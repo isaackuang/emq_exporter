@@ -1,0 +1,18 @@
+kind: pipeline
+name: default
+
+steps:
+- name: build-binary
+  image: golang
+  commands:
+    - make build
+  when:
+    event: tag
+- name: publish
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_token
+    files: bin/*
+  when:
+    event: tag
