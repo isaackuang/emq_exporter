@@ -25,6 +25,12 @@ var (
 		"nodes_stats":   "/api/v3/nodes/%s/stats/",
 		"nodes":         "/api/v3/nodes/%s",
 	}
+	//scraping endpoints for EMQ v3 api version
+	targetsV4 = map[string]string{
+		"nodes_metrics": "/api/v4/nodes/%s/metrics/",
+		"nodes_stats":   "/api/v4/nodes/%s/stats/",
+		"nodes":         "/api/v4/nodes/%s",
+	}
 )
 
 type emqResponse struct {
@@ -56,12 +62,17 @@ func NewClient(host, node, apiVersion, username, password string) *Client {
 		password:   password,
 	}
 
-	if apiVersion == "v2" {
+	switch apiVersion {
+	case "v2":
 		c.targets = targetsV2
-	} else {
+	case "v3":
 		c.targets = targetsV3
+	case "v4":
+		c.targets = targetsV4
+	default:
+		c.targets = targetsV2
 	}
-
+	
 	return c
 }
 
